@@ -82,10 +82,14 @@ function updateGraph() {
 
             transition_time = 1000;
 
+            force.nodes(graph.nodes)
+                .links(graph.links)
+                .start();
+
             link = d3.select("g#links")
                 .selectAll(".link")
                 .data(graph.links, function (d) {
-                    return graph.nodes[d.source].id + graph.nodes[d.target].id;
+                    return d.source.id + d.target.id;
                 });
 
             console.log(link);
@@ -143,10 +147,6 @@ function updateGraph() {
                 .attr("r", 0.0)
                 .style("fill", "black")
                 .remove();
-
-            force.nodes(graph.nodes)
-                .links(graph.links)
-                .start();
 
             force.on("tick", function () {
                 link.attr("x1", function (d) { return d.source.x; })
