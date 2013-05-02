@@ -36,7 +36,7 @@ def run(start_date=None, end_date=None):
     for q in query:
         # For each result record, construct an "alert type" node and store it in
         # the node list.
-        alert = {"id": q["_id"], "date": q["date"], "rating": q["rating"]["rating"], "type": "alert"}
+        alert = {"id": str(q["_id"]), "date": q["date"], "rating": q["rating"]["rating"], "type": "alert"}
         nodes.append(alert)
 
         # Extract the disease and country, and create nodes for them if they
@@ -54,6 +54,15 @@ def run(start_date=None, end_date=None):
 
     # Add the disease and country nodes to the node list.
     nodes += countries.values() + diseases.values()
+
+    # Create an index map of the nodes.
+    nodemap = {value["id"]: index for (index, value) in enumerate(nodes)}
+
+    # Replace the raw entries in the links list with indices into the node
+    # array.
+    for i, v in enumerate(links):
+        links[i]["source"] = nodemap[v["source"]["id"]]
+        links[i]["target"] = nodemap[v["target"]["id"]]
 
     # Create a response object and pack the graph structure into it.
     r = tangelo.empty_response()
