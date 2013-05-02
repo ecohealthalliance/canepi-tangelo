@@ -1,0 +1,85 @@
+{
+  "width": 400,
+  "height": 400,
+  "padding": {"top":50, "left":50, "bottom":50, "right":50},
+  "data": [
+    {
+      "name": "alerts"
+    }
+  ],
+  "scales": [
+    {
+      "name": "time",
+      "type": "time",
+      "range": "width",
+      "domain": {"data": "alerts", "field": "data.0"}
+    },
+    {
+      "name": "rating",
+      "nice": true,
+      "range": "width",
+      "domain": {"data": "alerts", "field": "data.1"}
+    },
+    {
+      "name": "ratingRadius",
+      "range": [0, 400],
+      "domain": {"data": "alerts", "field": "data.1"}
+    },
+    {
+      "name": "disease",
+      "type": "ordinal",
+      "points": true,
+      "padding": 2,
+      "range": "height",
+      "domain": {"data": "alerts", "field": "data.2"}
+    },
+    {
+      "name": "country",
+      "type": "ordinal",
+      "range": "category20",
+      "domain": {"data": "alerts", "field": "data.3"}
+    }
+  ],
+  "axes": [
+    {"type": "x", "scale": "time"},
+    {
+      "type": "y",
+      "scale": "disease",
+      "orient": "right",
+      "properties": {
+        "labels": {
+          "angle": {"value": 0},
+          "align": {"value": "left"},
+          "baseline": {"value": "middle"},
+          "fontSize": {"value": 7}
+        }
+      }
+    }
+  ],
+  "legends": [
+    {"scale": "country"}
+  ],
+  "marks": [
+    {
+      "type": "symbol",
+      "from": {"data": "alerts"},
+      "properties": {
+        "enter": {
+          "y": {"scale": "disease", "field": "data.2"},
+          "x": {"scale": "time", "field": "data.0"},
+          "stroke": {"value": "steelblue"},
+          "strokeOpacity": {"value": 0},
+          "size": {"scale": "ratingRadius", "field": "data.1"}
+        },
+        "update": {
+          "fillOpacity": {"value": 0.05},
+          "fill": {"scale": "country", "field": "data.3"}
+        },
+        "hover": {
+          "fillOpacity": {"value": 1},
+          "fill": {"value": "pink"}
+        }
+      }
+    }
+  ]
+}
