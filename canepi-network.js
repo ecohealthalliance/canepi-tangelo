@@ -3,7 +3,37 @@ var nodes,
     force,
     width,
     height,
-    color;
+    color,
+    transition_time;
+
+var timeout = null;
+function toggleAnimation() {
+    anim = d3.select("#animate");
+    update = d3.select("#update");
+
+    if (anim.text() === "Animate") {
+        anim.text("Stop animation")
+            .classed("btn-success", false)
+            .classed("btn-warning", true);
+        update.attr("disabled", true);
+
+        timeout = setInterval(function () {
+            var value;
+
+            value = $("#date").slider("value") + 86400e3;
+            $("#date").slider("value", value);
+
+            updateGraph();
+        }, transition_time * 1.5);
+    } else {
+        anim.text("Animate")
+            .classed("btn-success", true)
+            .classed("brn-warning", false);
+        update.attr("disabled", null);
+
+        clearInterval(timeout);
+    }
+}
 
 function updateGraph() {
     "use strict";
@@ -37,7 +67,6 @@ function updateGraph() {
         dataType: "json",
         success: function (resp) {
             var tau,
-                transition_time,
                 graph,
                 link,
                 node,
@@ -62,7 +91,6 @@ function updateGraph() {
             });
 
             graph = resp.result;
-            console.log(graph);
             newidx = [];
             $.each(graph.nodes, function (i, v) {
                 if (map.hasOwnProperty(v.id)) {
@@ -76,11 +104,9 @@ function updateGraph() {
             tau = 2 * Math.PI;
             angle = tau / newidx.length;
             $.each(newidx, function (i, v) {
-                graph.nodes[i].x = (width/4) * Math.cos(i * angle) + (width/2);
-                graph.nodes[i].y = (height/4) * Math.sin(i * angle) + (height/2);
+                graph.nodes[i].x = (width/2) * Math.cos(i * angle) + (width/2);
+                graph.nodes[i].y = (height/2) * Math.sin(i * angle) + (height/2);
             });
-
-            transition_time = 1000;
 
             force.nodes(graph.nodes)
                 .links(graph.links)
@@ -91,8 +117,6 @@ function updateGraph() {
                 .data(graph.links, function (d) {
                     return d.source.id + d.target.id;
                 });
-
-            console.log(link);
 
             link.enter().append("line")
                 .classed("link", true)
@@ -113,15 +137,18 @@ function updateGraph() {
             node = d3.select("g#nodes")
                 .selectAll(".node")
                 .data(graph.nodes, function (d) {
-                    console.log(d.id);
                     return d.id;
                 });
 
             enter = node.enter().append("circle")
                 .classed("node", true)
-                .attr("r", 10)
+                .attr("r", function (d) {
+                    return d.type !== "alert" ? 10 : 5;
+                })
                 .style("opacity", 0.0)
-                .style("fill", "red");
+                .style("fill", function (d) {
+                    return d.type !== "alert" ? "red" : color(d.type);
+                });
             enter.transition()
                 .duration(transition_time)
                 .attr("r", 5)
@@ -209,9 +236,9 @@ window.onload = function () {
         .on("click", updateGraph);
 
     d3.select("#animate")
-        .on("click", function () {
-            console.log("animate button clicked");
-        });
+        .on("click", toggleAnimation);
+
+    transition_time = 2000;
 
     updateGraph();
 }
