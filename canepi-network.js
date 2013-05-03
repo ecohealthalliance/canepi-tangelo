@@ -136,37 +136,41 @@ function updateGraph() {
                 .remove();
 
             node = d3.select("g#nodes")
-                .selectAll(".node")
+                .selectAll("g")
                 .data(graph.nodes, function (d) {
                     return d.id;
                 });
 
-            enter = node.enter().append("circle")
-                .classed("node", true)
-                .attr("r", function (d) {
-                    return d.type !== "alert" ? 10 : 5;
+            enter = node.enter().append("g");
+
+            enter.filter(function (d) {
+                    return d.type === "alert";
                 })
+                .append("circle")
+                .classed("node", true)
+                .attr("r", 5)
                 .style("opacity", 0.0)
                 .style("fill", function (d) {
-                    return d.type !== "alert" ? "red" : color(d.type);
-                });
-            enter.transition()
-                .duration(transition_time)
-                .attr("r", 5)
-                .style("opacity", 1.0)
-                .style("fill", function (d) {
                     return color(d.type);
-                });
+                })
+                .transition()
+                .duration(transition_time)
+                .style("opacity", 1.0);
 
-            enter.call(force.drag)
-                .append("title")
+            enter.filter(function (d) {
+                    return d.type !== "alert";
+                })
+                .append("text")
+                .classed("node", true)
                 .text(function (d) {
-                    if (d.type === "alert") {
-                        return tangelo.date.displayDate(new Date(d.date.$date));
-                    } else {
-                        return d.id;
-                    }
-                });
+                    return d.id;
+                })
+                .style("opacity", 0.0)
+                .transition()
+                .duration(transition_time)
+                .style("opacity", 1.0);
+
+            node.call(force.drag);
 
             node.exit()
                 .transition()
@@ -182,8 +186,9 @@ function updateGraph() {
                     .attr("x2", function (d) { return d.target.x; })
                     .attr("y2", function (d) { return d.target.y; });
 
-                node.attr("cx", function (d) { return d.x; })
-                    .attr("cy", function (d) { return d.y; })
+                    node.attr("transform", function (d) {
+                        return "translate(" + d.x + ", " + d.y + ")";
+                    });
             });
         }
     });
