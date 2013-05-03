@@ -156,15 +156,41 @@ function updateGraph() {
                 .transition()
                 .duration(transition_time)
                 .style("opacity", 1.0);
+            enter.filter(function (d) {
+                    return d.type === "alert";
+                })
+                .append("title")
+                .text(function (d) {
+                    return tangelo.date.displayDate(new Date(d.date.$date));
+                });
 
             enter.filter(function (d) {
                     return d.type !== "alert";
                 })
                 .append("text")
-                .classed("node", true)
                 .text(function (d) {
                     return d.id;
                 })
+                .datum(function (d) {
+                    d.bbox = this.getBBox();
+                })
+                .attr("x", function (d) { return -0.5 * this.getBBox().width; })
+                .style("opacity", 0.0)
+                .transition()
+                .duration(transition_time)
+                .style("opacity", 1.0);
+
+            enter.filter(function (d) {
+                    return d.type !== "alert";
+                })
+                .insert("rect", ":first-child")
+                .attr("width", function (d) { return d.bbox.width; })
+                .attr("height", function (d) { return d.bbox.height; })
+                .attr("y", function (d) { return -0.75*d.bbox.height; })
+                .attr("x", function (d) { return -0.5*d.bbox.width; })
+                .style("stroke", function (d) { return color(d.type); })
+                .style("stroke-width", "2px")
+                .style("fill", "#e5e5e5")
                 .style("opacity", 0.0)
                 .transition()
                 .duration(transition_time)
