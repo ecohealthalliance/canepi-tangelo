@@ -3,7 +3,37 @@ var nodes,
     force,
     width,
     height,
-    color;
+    color,
+    transition_time;
+
+var timeout = null;
+function toggleAnimation() {
+    anim = d3.select("#animate");
+    update = d3.select("#update");
+
+    if (anim.text() === "Animate") {
+        anim.text("Stop animation")
+            .classed("btn-success", false)
+            .classed("btn-warning", true);
+        update.attr("disabled", true);
+
+        timeout = setInterval(function () {
+            var value;
+
+            value = $("#date").slider("value") + 86400e3;
+            $("#date").slider("value", value);
+
+            updateGraph();
+        }, transition_time * 1.5);
+    } else {
+        anim.text("Animate")
+            .classed("btn-success", true)
+            .classed("brn-warning", false);
+        update.attr("disabled", null);
+
+        clearInterval(timeout);
+    }
+}
 
 function updateGraph() {
     "use strict";
@@ -37,7 +67,6 @@ function updateGraph() {
         dataType: "json",
         success: function (resp) {
             var tau,
-                transition_time,
                 graph,
                 link,
                 node,
@@ -209,9 +238,7 @@ window.onload = function () {
         .on("click", updateGraph);
 
     d3.select("#animate")
-        .on("click", function () {
-            console.log("animate button clicked");
-        });
+        .on("click", toggleAnimation);
 
     updateGraph();
 }
