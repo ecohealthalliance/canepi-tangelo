@@ -110,7 +110,8 @@ function updateGraph() {
 
             force.nodes(graph.nodes)
                 .links(graph.links)
-                .start();
+                .start()
+                .alpha(0.02);
 
             link = d3.select("g#links")
                 .selectAll(".link")
@@ -135,37 +136,67 @@ function updateGraph() {
                 .remove();
 
             node = d3.select("g#nodes")
-                .selectAll(".node")
+                .selectAll("g")
                 .data(graph.nodes, function (d) {
                     return d.id;
                 });
 
-            enter = node.enter().append("circle")
-                .classed("node", true)
-                .attr("r", function (d) {
-                    return d.type !== "alert" ? 10 : 5;
+            enter = node.enter().append("g");
+
+            enter.filter(function (d) {
+                    return d.type === "alert";
                 })
+                .append("circle")
+                .classed("node", true)
+                .attr("r", 5)
                 .style("opacity", 0.0)
                 .style("fill", function (d) {
-                    return d.type !== "alert" ? "red" : color(d.type);
-                });
-            enter.transition()
-                .duration(transition_time)
-                .attr("r", 5)
-                .style("opacity", 1.0)
-                .style("fill", function (d) {
                     return color(d.type);
-                });
-
-            enter.call(force.drag)
+                })
+                .transition()
+                .duration(transition_time)
+                .style("opacity", 1.0);
+            enter.filter(function (d) {
+                    return d.type === "alert";
+                })
                 .append("title")
                 .text(function (d) {
-                    if (d.type === "alert") {
-                        return tangelo.date.displayDate(new Date(d.date.$date));
-                    } else {
-                        return d.id;
-                    }
+                    return tangelo.date.displayDate(new Date(d.date.$date));
                 });
+
+            enter.filter(function (d) {
+                    return d.type !== "alert";
+                })
+                .append("text")
+                .text(function (d) {
+                    return d.id;
+                })
+                .datum(function (d) {
+                    d.bbox = this.getBBox();
+                })
+                .attr("x", function (d) { return -0.5 * this.getBBox().width; })
+                .style("opacity", 0.0)
+                .transition()
+                .duration(transition_time)
+                .style("opacity", 1.0);
+
+            enter.filter(function (d) {
+                    return d.type !== "alert";
+                })
+                .insert("rect", ":first-child")
+                .attr("width", function (d) { return d.bbox.width; })
+                .attr("height", function (d) { return d.bbox.height; })
+                .attr("y", function (d) { return -0.75*d.bbox.height; })
+                .attr("x", function (d) { return -0.5*d.bbox.width; })
+                .style("stroke", function (d) { return color(d.type); })
+                .style("stroke-width", "2px")
+                .style("fill", "#e5e5e5")
+                .style("opacity", 0.0)
+                .transition()
+                .duration(transition_time)
+                .style("opacity", 1.0);
+
+            node.call(force.drag);
 
             node.exit()
                 .transition()
@@ -181,8 +212,9 @@ function updateGraph() {
                     .attr("x2", function (d) { return d.target.x; })
                     .attr("y2", function (d) { return d.target.y; });
 
-                node.attr("cx", function (d) { return d.x; })
-                    .attr("cy", function (d) { return d.y; })
+                    node.attr("transform", function (d) {
+                        return "translate(" + d.x + ", " + d.y + ")";
+                    });
             });
         }
     });
