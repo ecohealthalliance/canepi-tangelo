@@ -108,8 +108,6 @@ function updateGraph() {
                 graph.nodes[i].y = (height/2) * Math.sin(i * angle) + (height/2);
             });
 
-            transition_time = 1000;
-
             force.nodes(graph.nodes)
                 .links(graph.links)
                 .start();
@@ -239,6 +237,8 @@ window.onload = function () {
 
     d3.select("#animate")
         .on("click", toggleAnimation);
+
+    transition_time = 2000;
 
     updateGraph();
 }
