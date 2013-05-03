@@ -110,7 +110,8 @@ function updateGraph() {
 
             force.nodes(graph.nodes)
                 .links(graph.links)
-                .start();
+                .start()
+                .alpha(0.01);
 
             link = d3.select("g#links")
                 .selectAll(".link")
