@@ -144,9 +144,13 @@ function updateGraph() {
 
             enter = node.enter().append("circle")
                 .classed("node", true)
-                .attr("r", 10)
+                .attr("r", function (d) {
+                    return d.type !== "alert" ? 10 : 5;
+                })
                 .style("opacity", 0.0)
-                .style("fill", "red");
+                .style("fill", function (d) {
+                    return d.type !== "alert" ? "red" : color(d.type);
+                });
             enter.transition()
                 .duration(transition_time)
                 .attr("r", 5)
