@@ -91,7 +91,6 @@ function updateGraph() {
             });
 
             graph = resp.result;
-            console.log(graph);
             newidx = [];
             $.each(graph.nodes, function (i, v) {
                 if (map.hasOwnProperty(v.id)) {
@@ -121,8 +120,6 @@ function updateGraph() {
                     return d.source.id + d.target.id;
                 });
 
-            console.log(link);
-
             link.enter().append("line")
                 .classed("link", true)
                 .style("opacity", 0.0)
@@ -142,7 +139,6 @@ function updateGraph() {
             node = d3.select("g#nodes")
                 .selectAll(".node")
                 .data(graph.nodes, function (d) {
-                    console.log(d.id);
                     return d.id;
                 });
 
