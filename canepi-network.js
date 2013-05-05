@@ -311,7 +311,8 @@ window.onload = function () {
                 .attr("type", "checkbox")
                 .attr("id", function (d) {
                     return "country:" + d.replace(/ /g, "-");
-                });
+                })
+                .attr("checked" , true);
 
         d3.select("#diseases")
             .selectAll("label")
@@ -326,7 +327,8 @@ window.onload = function () {
                 .attr("type", "checkbox")
                 .attr("id", function (d) {
                     return "disease:" + d.replace(/ /g, "-");
-                });
+                })
+                .attr("checked", true);
     });
 
     transition_time = 2000;
