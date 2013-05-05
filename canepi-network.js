@@ -270,6 +270,65 @@ window.onload = function () {
     d3.select("#animate")
         .on("click", toggleAnimation);
 
+    d3.json("service/canepi", function (e, json) {
+        var countries,
+            diseases,
+            filter,
+            set,
+            spans;
+
+        filter = function (i) {
+            var set = {};
+
+            return function (d) {
+                var retval;
+
+                if (d[i] === null) {
+                    return false;
+                }
+
+                retval = !set[d[i]];
+                if (!set.hasOwnProperty(d[i])) {
+                    set[d[i]] = true;
+                }
+                return retval;
+            };
+        };
+
+        countries = json.filter(filter(3)).map(function (d) { return d[3]; }).sort();
+        diseases = json.filter(filter(2)).map(function (d) { return d[2]; }).sort();
+
+        d3.select("#countries")
+            .selectAll("label")
+            .data(countries)
+            .enter()
+            .append("label")
+                .classed("checkbox", true)
+                .text(function (d) {
+                    return d;
+                })
+            .append("input")
+                .attr("type", "checkbox")
+                .attr("id", function (d) {
+                    return "country:" + d.replace(/ /g, "-");
+                });
+
+        d3.select("#diseases")
+            .selectAll("label")
+            .data(diseases)
+            .enter()
+            .append("label")
+                .classed("checkbox", true)
+                .text(function (d) {
+                    return d;
+                })
+            .append("input")
+                .attr("type", "checkbox")
+                .attr("id", function (d) {
+                    return "disease:" + d.replace(/ /g, "-");
+                });
+    });
+
     transition_time = 2000;
 
     updateGraph();
