@@ -42,6 +42,8 @@ function updateGraph() {
         change_button,
         start_date,
         end_date,
+        omit_countries,
+        omit_diseases,
         data,
         map;
 
@@ -55,10 +57,28 @@ function updateGraph() {
 
     start_date = new Date($("#date").slider("value"));
     end_date = new Date(start_date.getTime() + $("#range").slider("value") * 86400 * 1000);
+    omit_countries = d3.select("#countries")
+        .selectAll("input")
+        .filter(function () {
+            return !d3.select(this).property("checked");
+        })[0]
+        .map(function (x) {
+            return d3.select(x).attr("name");
+        });
+    omit_diseases = d3.select("#diseases")
+        .selectAll("input")
+        .filter(function () {
+            return !d3.select(this).property("checked");
+        })[0]
+        .map(function (x) {
+            return d3.select(x).attr("name");
+        });
 
     data = {
         start_date: start_date.getFullYear() + "-" + (start_date.getMonth() + 1) + "-" + start_date.getDate(),
-        end_date: end_date.getFullYear() + "-" + (end_date.getMonth() + 1) + "-" + end_date.getDate()
+        end_date: end_date.getFullYear() + "-" + (end_date.getMonth() + 1) + "-" + end_date.getDate(),
+        omit_countries: JSON.stringify(omit_countries),
+        omit_diseases: JSON.stringify(omit_diseases)
     };
 
     $.ajax({
@@ -269,6 +289,67 @@ window.onload = function () {
 
     d3.select("#animate")
         .on("click", toggleAnimation);
+
+    d3.json("service/canepi", function (e, json) {
+        var countries,
+            diseases,
+            filter,
+            set,
+            spans;
+
+        filter = function (i) {
+            var set = {};
+
+            return function (d) {
+                var retval;
+
+                if (d[i] === null) {
+                    return false;
+                }
+
+                retval = !set[d[i]];
+                if (!set.hasOwnProperty(d[i])) {
+                    set[d[i]] = true;
+                }
+                return retval;
+            };
+        };
+
+        countries = json.filter(filter(3)).map(function (d) { return d[3]; }).sort();
+        diseases = json.filter(filter(2)).map(function (d) { return d[2]; }).sort();
+
+        d3.select("#countries")
+            .selectAll("label")
+            .data(countries)
+            .enter()
+            .append("label")
+                .classed("checkbox", true)
+                .text(function (d) {
+                    return d;
+                })
+            .append("input")
+                .attr("type", "checkbox")
+                .attr("name", function (d) {
+                    return d;
+                })
+                .property("checked" , true);
+
+        d3.select("#diseases")
+            .selectAll("label")
+            .data(diseases)
+            .enter()
+            .append("label")
+                .classed("checkbox", true)
+                .text(function (d) {
+                    return d;
+                })
+            .append("input")
+                .attr("type", "checkbox")
+                .attr("name", function (d) {
+                    return d;
+                })
+                .property("checked", true);
+    });
 
     transition_time = 2000;
 

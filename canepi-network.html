@@ -47,6 +47,11 @@
         stroke: black;
         stroke-opacity: 0.6;
     }
+
+    .list {
+        height: 300px;
+        overflow-y: auto;
+    }
 </style>
 
 <title>Canepi Network Visualization</title>
@@ -77,18 +82,30 @@
 <div data-tangelo-type=control-panel>
     <div class=container>
         <div class=row>
-            <div class=span6>
+            <div class=span3>
                 <!-- JQuery slider -->
                 <h4>Date</h4>
                 <div id=date></div>
                 <div id=date-label class=code></div>
             </div>
 
-            <div class=span6>
+            <div class=span3>
                 <!-- JQuery slider -->
                 <h4>Date range</h4>
                 <div id=range></div>
                 <div id=range-label class=code></div>
+            </div>
+
+            <!--<div class=span3 style="height:2in; overflow:auto;">-->
+            <div class=span3>
+                <h4>Diseases</h4>
+                <div id=diseases class=list></div>
+            </div>
+
+            <div class=span3>
+            <div class=span3>
+                <h4>Countries</h4>
+                <div id=countries class=list></div>
             </div>
         </div>
 
