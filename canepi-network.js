@@ -42,6 +42,8 @@ function updateGraph() {
         change_button,
         start_date,
         end_date,
+        omit_countries,
+        omit_diseases,
         data,
         map;
 
@@ -55,10 +57,28 @@ function updateGraph() {
 
     start_date = new Date($("#date").slider("value"));
     end_date = new Date(start_date.getTime() + $("#range").slider("value") * 86400 * 1000);
+    omit_countries = d3.select("#countries")
+        .selectAll("input")
+        .filter(function () {
+            return !d3.select(this).property("checked");
+        })[0]
+        .map(function (x) {
+            return d3.select(x).attr("name");
+        });
+    omit_diseases = d3.select("#diseases")
+        .selectAll("input")
+        .filter(function () {
+            return !d3.select(this).property("checked");
+        })[0]
+        .map(function (x) {
+            return d3.select(x).attr("name");
+        });
 
     data = {
         start_date: start_date.getFullYear() + "-" + (start_date.getMonth() + 1) + "-" + start_date.getDate(),
-        end_date: end_date.getFullYear() + "-" + (end_date.getMonth() + 1) + "-" + end_date.getDate()
+        end_date: end_date.getFullYear() + "-" + (end_date.getMonth() + 1) + "-" + end_date.getDate(),
+        omit_countries: JSON.stringify(omit_countries),
+        omit_diseases: JSON.stringify(omit_diseases)
     };
 
     $.ajax({
@@ -309,10 +329,10 @@ window.onload = function () {
                 })
             .append("input")
                 .attr("type", "checkbox")
-                .attr("id", function (d) {
-                    return "country:" + d.replace(/ /g, "-");
+                .attr("name", function (d) {
+                    return d;
                 })
-                .attr("checked" , true);
+                .property("checked" , true);
 
         d3.select("#diseases")
             .selectAll("label")
@@ -325,10 +345,10 @@ window.onload = function () {
                 })
             .append("input")
                 .attr("type", "checkbox")
-                .attr("id", function (d) {
-                    return "disease:" + d.replace(/ /g, "-");
+                .attr("name", function (d) {
+                    return d;
                 })
-                .attr("checked", true);
+                .property("checked", true);
     });
 
     transition_time = 2000;

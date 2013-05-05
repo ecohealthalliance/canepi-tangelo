@@ -3,7 +3,7 @@ import tangelo
 import pymongo
 import bson.json_util
 
-def run(start_date=None, end_date=None):
+def run(start_date=None, end_date=None, omit_countries=None, omit_diseases=None):
     # Check for required arguments.
     if start_date is None:
         return tangelo.HTTPStatusCode("422 Missing Parameter", "Required parameter <i>start_date</i> missing.");
@@ -21,10 +21,31 @@ def run(start_date=None, end_date=None):
     except ValueError:
         return tangelo.HTTPStatusCode("422 Bad Parameter", "Parameter <i>end_date</i> ('%s') was not in YYYY-MM-DD form." % (end_date))
 
+    # See if there are any countries or diseases to omit.
+    if omit_countries is None:
+        omit_countries = []
+    else:
+        try:
+            omit_countries = bson.json_util.loads(omit_countries)
+        except ValueError:
+            return tangelo.HTTPStatusCode("422 Bad Parameter", "Parameter <i>omit_countries</i> ('%s') was not JSON-deserializable." % (omit_countries))
+
+    if omit_diseases is None:
+        omit_diseases = []
+    else:
+        try:
+            omit_diseases = bson.json_util.loads(omit_diseases)
+        except ValueError:
+            return tangelo.HTTPStatusCode("422 Bad Parameter", "Parameter <i>omit_diseases</i> ('%s') was not JSON-deserializable." % (omit_diseases))
+
     # Perform the lookup.
     coll = pymongo.Connection("mongo").canepi.alerts
-    query = coll.find({"$and": [ {"date": {"$gte": start_date} },
-        {"date": {"$lt": end_date} } ] }, fields = ["_id", "date", "rating.rating", "disease", "country"])
+    query = coll.find({"$and": [{"date": {"$gte": start_date} },
+                                {"date": {"$lt": end_date} },
+                                {"disease": {"$not": {"$in": omit_diseases}}},
+                                {"country": {"$not": {"$in": omit_countries}}}]
+                      },
+                      fields = ["_id", "date", "rating.rating", "disease", "country"])
 
     # Compute the graph structure.
     nodes = []
