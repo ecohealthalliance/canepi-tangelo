@@ -3,8 +3,10 @@
 <html>
     <head>
         <link href="/css/tangelo.css" rel=stylesheet type="text/css">
+        <link href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css">
         <title>Canepi</title/>
         <script src="/lib/jquery-1.8.2.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
         <script src="/lib/tangelo.min.js"></script>
         <script src="/lib/bootstrap.js"></script>
         <script src="/lib/d3.v3.min.js"></script>
@@ -23,17 +25,32 @@
         </style>
     </head>
     <body>
-<div data-tangelo-type="navbar" data-tangelo-brand="Canepi" data-tangelo-brand-href="/" data-tangelo-app="HealthMap Plot">
-    <div data-tangelo-type="info">
-        Canepi HealthMap plot.
-    </div>
-</div>
-        <div id="vis"></div>
-<div data-tangelo-type="control-panel">
-    <div class="container">
-        <div class="row">
+        <div data-tangelo-type="navbar" data-tangelo-brand="Canepi" data-tangelo-brand-href="/" data-tangelo-app="HealthMap Plot">
+            <div data-tangelo-type="info">
+                Canepi HealthMap plot.
+            </div>
         </div>
-    </div>
-</div>
+        <div id="vis"></div>
+        <div data-tangelo-type="control-panel">
+            <div class="container">
+                <div class="row">
+                    <div class="span4">
+                        <h4>Country</h4>
+                        <input id="country" type="text"/>
+                    </div>
+                    <div class="span4">
+                        <h4>Disease</h4>
+                        <input id="disease" type="text"/>
+                    </div>
+                    <div class="span4">
+                        <h4>Date Range</h4>
+                        <div id="date-min"></div>
+                        <div id="date-min-label" class="code"></div>
+                        <div id="date-max"></div>
+                        <div id="date-max-label" class="code"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

@@ -50,8 +50,7 @@
         "labels": {
           "angle": {"value": 0},
           "align": {"value": "left"},
-          "baseline": {"value": "middle"},
-          "fontSize": {"value": 7}
+          "baseline": {"value": "middle"}
         }
       }
     }
@@ -62,22 +61,27 @@
   "marks": [
     {
       "type": "symbol",
+      "key": "data.4",
       "from": {"data": "alerts"},
       "properties": {
         "enter": {
-          "y": {"scale": "disease", "field": "data.2"},
-          "x": {"scale": "time", "field": "data.0"},
           "stroke": {"value": "steelblue"},
           "strokeOpacity": {"value": 0},
-          "size": {"scale": "ratingRadius", "field": "data.1"}
-        },
-        "update": {
-          "fillOpacity": {"value": 0.05},
+          "size": {"scale": "ratingRadius", "field": "data.1"},
           "fill": {"scale": "country", "field": "data.3"}
         },
+        "update": {
+          "y": {"scale": "disease", "field": "data.2"},
+          "x": {"scale": "time", "field": "data.0"},
+          "fill": {"scale": "country", "field": "data.3"},
+          "fillOpacity": {"value": 0.05}
+        },
         "hover": {
-          "fillOpacity": {"value": 1},
-          "fill": {"value": "pink"}
+          "fill": {"value": "red"},
+          "fillOpacity": {"value": 1}
+        },
+        "exit": {
+          "fillOpacity": {"value": 0}
         }
       }
     }
