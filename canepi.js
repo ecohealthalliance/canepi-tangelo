@@ -17,8 +17,8 @@ $(function () {
     function update() {
         var min_date, max_date, i, d;
 
-        min_date = new Date($("#date-min").slider("value"));
-        max_date = new Date($("#date-max").slider("value"));
+        min_date = new Date($("#date").slider("values", 0));
+        max_date = new Date($("#date").slider("values", 1));
 
         data = [];
         for (i = 0; i < full_data.length; ++i) {
@@ -44,35 +44,25 @@ $(function () {
             padding.right = padding.left;
 
             view = chart({el: "#vis", data: {alerts: full_data}}).width(width).height(height).padding(padding).update();
-            $("#date-min").slider("value", new Date("October 28, 2012").getTime());
-            $("#date-max").slider("value", new Date("April 25, 2013").getTime());
+            $("#date").slider("values", 0, new Date("October 28, 2012").getTime());
+            $("#date").slider("values", 1, new Date("April 25, 2013").getTime());
         });
     }
 
-    function date_min_display(evt, ui) {
+    function date_display(evt, ui) {
         d3.select("#date-min-label")
-            .text(tangelo.date.displayDate(new Date(ui.value)));
-    }
-
-    function date_max_display(evt, ui) {
+            .text(tangelo.date.displayDate(new Date(ui.values[0])));
         d3.select("#date-max-label")
-            .text(tangelo.date.displayDate(new Date(ui.value)));
+            .text(tangelo.date.displayDate(new Date(ui.values[1])));
     }
 
-    $("#date-min").slider({
+    $("#date").slider({
+        range: true,
         min: new Date("October 28, 2012").getTime(),
         max: new Date("April 25, 2013").getTime(),
         step: 86400e3,
         slide: date_min_display,
-        change: function(evt, ui) { date_min_display(evt, ui); update(); }
-    });
-
-    $("#date-max").slider({
-        min: new Date("October 28, 2012").getTime(),
-        max: new Date("April 25, 2013").getTime(),
-        step: 86400e3,
-        slide: date_max_display,
-        change: function(evt, ui) { date_max_display(evt, ui); update(); }
+        change: function(evt, ui) { date_display(evt, ui); update(); }
     });
 
     d3.select("#country").on("keyup", function () {
