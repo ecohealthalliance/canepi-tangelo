@@ -61,7 +61,7 @@ $(function () {
         min: new Date("October 28, 2012").getTime(),
         max: new Date("April 25, 2013").getTime(),
         step: 86400e3,
-        slide: date_min_display,
+        slide: date_display,
         change: function(evt, ui) { date_display(evt, ui); update(); }
     });
 
