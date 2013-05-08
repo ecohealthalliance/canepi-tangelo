@@ -22,6 +22,17 @@
         height: 100%;
         background-color: #eee;
     }
+
+    .hoverbox {
+        position: fixed;
+        top: 100px;
+        left: 40px;
+        border-radius: 5px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        opacity: 0;
+        width: 400px;
+    }
         </style>
     </head>
     <body>
@@ -31,6 +42,7 @@
             </div>
         </div>
         <div id="vis"></div>
+        <div class="hoverbox"></div>
         <div data-tangelo-type="control-panel">
             <div class="container">
                 <div class="row">

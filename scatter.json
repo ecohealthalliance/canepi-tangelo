@@ -61,20 +61,19 @@
   "marks": [
     {
       "type": "symbol",
-      "key": "data.4",
       "from": {"data": "alerts"},
       "properties": {
         "enter": {
           "stroke": {"value": "steelblue"},
           "strokeOpacity": {"value": 0},
-          "size": {"scale": "ratingRadius", "field": "data.1"},
-          "fill": {"scale": "country", "field": "data.3"}
+          "fill": {"field": "data.4"}
         },
         "update": {
           "y": {"scale": "disease", "field": "data.2"},
           "x": {"scale": "time", "field": "data.0"},
-          "fill": {"scale": "country", "field": "data.3"},
-          "fillOpacity": {"value": 0.05}
+          "size": {"scale": "ratingRadius", "field": "data.1"},
+          "fill": {"field": "data.4"},
+          "fillOpacity": {"value": 0.1}
         },
         "hover": {
           "fill": {"value": "red"},
